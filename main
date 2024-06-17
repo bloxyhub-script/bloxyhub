@@ -1,0 +1,225 @@
+local OrionLib = loadstring(game:HttpGet(('https://raw.githubusercontent.com/shlexware/Orion/main/source')))()
+
+OrionLib:MakeNotification({
+	Name = "Thanks for using this script!",
+	Content = "This script is developed & maintained by snowydemise & p_dh",
+	Image = "rbxassetid://4483345998",
+	Time = 5
+})
+
+local Window = OrionLib:MakeWindow({Name = "Egg Empire Utility", HidePremium = true, SaveConfig = false, ConfigFolder = "OrionTest"})
+
+local farmTab = Window:MakeTab({
+	Name = "Farming",
+	Icon = "rbxassetid://4483345998",
+	PremiumOnly = false
+})
+
+farmTab:AddToggle({
+	Name = "Auto Sell",
+	Default = false,
+	Callback = function(b)
+		getgenv().sell = b;
+		while true do
+			if not getgenv().sell then return end
+			game:GetService("ReplicatedStorage").events.remotes.collectEggs:FireServer()
+			wait(1.5)
+			game:GetService("ReplicatedStorage").events.remotes.depositEggs:FireServer()
+			wait(2)
+		end
+	end    
+})
+
+farmTab:AddToggle({
+    Name = "Auto Housing",
+    Default = false,
+    Callback = function(enabled)
+        getgenv().housing = enabled
+
+        while getgenv().housing do
+            local args = {
+                [1] = game:GetService("Players").LocalPlayer
+            }
+            
+            game:GetService("ReplicatedStorage").events.remotes.chickenSpawned:FireServer(unpack(args))
+            
+            local chickensArgs = {
+                [1] = 1,
+                [2] = 0
+            }
+            game:GetService("ReplicatedStorage").events.remotes.addChickens:FireServer(unpack(chickensArgs))
+
+            wait(0.1)
+        end
+    end
+})
+
+
+
+
+local tier = "1"
+local upgrade = "1"
+farmTab:AddDropdown({
+	Name = "Select upgrade",
+	Default = "Premium Nests",
+	Options = {"Premium Nests", "Super Food", "Chicken Madness", "Running Chickens", "House Extensions", "Internal Hatchery", "Premium Packaging", "BIG eggs", "Super Hatcheries", "Quality Gas", "More Parking", "Chicken Stampede", "Egg Certification", "Air Conditioning", "Super Feed", "hicken Suites", "Light Boxes", "Helping Hands", "Hatchery Expansion", "Special DNA"},
+	Callback = function(Value)
+		if Value == "Premium Nests" then
+			tier = "1"
+			upgrade = "1"
+		end
+
+		if Value == "Super Food" then
+			tier = "1"
+			upgrade = "2"
+		end
+
+		if Value == "Chicken Madness" then
+			tier = "1"
+			upgrade = "3"
+		end
+
+		if Value == "Running Chickens" then
+			tier = "1"
+			upgrade = "4"
+		end
+
+		if Value == "House Extensions" then
+			tier = "2"
+			upgrade = "1"
+		end
+
+		if Value == "Internal Hatchery" then
+			tier = "2"
+			upgrade = "2"
+		end
+
+		if Value == "Premium Packaging" then
+			tier = "2"
+			upgrade = "3"
+		end
+
+		if Value == "BIG eggs" then
+			tier = "2"
+			upgrade = "4"
+		end
+
+		if Value == "Super Hatcheries" then
+			tier = "3"
+			upgrade = "1"
+		end
+
+		if Value == "Quality Gas" then
+			tier = "3"
+			upgrade = "2"
+		end
+
+		if Value == "More Parking" then
+			tier = "3"
+			upgrade = "3"
+		end
+
+		if Value == "Chicken Stampede" then
+			tier = "3"
+			upgrade = "4"
+		end
+
+		if Value == "Egg Certification" then
+			tier = "4"
+			upgrade = "1"
+		end
+
+		if Value == "Air Conditioning" then
+			tier = "4"
+			upgrade = "2"
+		end
+
+		if Value == "Super Feed" then
+			tier = "4"
+			upgrade = "3"
+		end
+
+		if Value == "Chicken Suites" then
+			tier = "4"
+			upgrade = "4"
+		end
+
+		if Value == "Light Boxes" then
+			tier = "5"
+			upgrade = "1"
+		end
+
+		if Value == "Helping Hands" then
+			tier = "5"
+			upgrade = "2"
+		end
+
+		if Value == "Hatchery Expansion" then
+			tier = "5"
+			upgrade = "3"
+		end
+
+		if Value == "Special DNA" then
+			tier = "5"
+			upgrade = "4"
+		end
+	end    
+})
+
+farmTab:AddToggle({
+	Name = "Auto Upgrade",
+	Default = false,
+	Callback = function(e)
+		getgenv().upgrade = e;
+
+		while true do
+			if not getgenv().upgrade then return end
+
+			local args = {
+				[1] = tier,
+				[2] = upgrade
+			}
+			game:GetService("ReplicatedStorage").events.remotes.buyUpgrade:FireServer(unpack(args))
+			wait(.01)
+		end
+	end    
+})
+
+local opTab = Window:MakeTab({
+	Name = "Overpowered",
+	Icon = "rbxassetid://4483345998",
+	PremiumOnly = false
+})
+
+opTab:AddLabel("This will enable a friends boost for everyone on your friends list.")
+opTab:AddLabel("IF YOU HAVE A LOT OF FRIENDS ADDED THIS IS VERY BROKEN!!!")
+opTab:AddButton({
+	Name = "Enable friend boost",
+	Callback = function()
+		local friends1 = game.Players:GetFriendsAsync(game.Players.LocalPlayer.UserId)
+		local realPage = friends1:GetCurrentPage()
+		for _, friend in ipairs(realPage) do
+            local args = {
+				[1] = friend.Id,
+				[2] = true
+			}
+			
+			game:GetService("ReplicatedStorage").events.remotes.friendsChanged:FireServer(unpack(args))
+        end
+  	end    
+})
+
+local miscTab = Window:MakeTab({
+	Name = "Misc",
+	Icon = "rbxassetid://4483345998",
+	PremiumOnly = false
+})
+
+miscTab:AddButton({
+	Name = "Buggy Complete Tutorial",
+	Callback = function()
+		game:GetService("ReplicatedStorage").events.remotes.tutorialCompleted:FireServer()
+	end
+})
+
+OrionLib:Init()
